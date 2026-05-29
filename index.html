@@ -1,67 +1,961 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zelten im Jura</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: Georgia, serif;
-      background: #f5f0e8;
-      color: #2c2c2c;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    .hero {
-      text-align: center;
-      max-width: 600px;
-    }
-    .emoji { font-size: 4rem; margin-bottom: 1rem; }
-    h1 {
-      font-size: 2.8rem;
-      color: #2d5016;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
-    }
-    .subtitle {
-      font-size: 1.2rem;
-      color: #6b7c3a;
-      margin-bottom: 2rem;
-      font-style: italic;
-    }
-    .divider {
-      width: 60px;
-      height: 3px;
-      background: #6b7c3a;
-      margin: 1.5rem auto;
-      border-radius: 2px;
-    }
-    p {
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: #444;
-    }
-    footer {
-      position: fixed;
-      bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: #aaa;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vatercamp – Bout-du-Pont 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #2d4a2d;
+    --moss: #4a6741;
+    --sage: #7a9e6e;
+    --cream: #f5f0e8;
+    --warm: #e8dfc8;
+    --ember: #c8602a;
+    --gold: #c4933a;
+    --ink: #1a2218;
+    --muted: #6b7a62;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--cream);
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── TAB NAV ── */
+  .tab-nav {
+    background: var(--forest);
+    display: flex;
+    gap: 3px;
+    padding: 12px 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 6px 6px 0 0;
+    color: rgba(255,255,255,0.65);
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    font-size: 12.5px;
+    padding: 8px 18px;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .tab-btn:hover { background: rgba(255,255,255,0.2); color: white; }
+  .tab-btn.active { background: var(--cream); color: var(--forest); font-weight: 600; }
+
+  .tab-content { display: none; max-width: 920px; margin: 0 auto; padding: 20px; }
+  .tab-content.active { display: block; }
+
+  /* ── CARDS ── */
+  .page {
+    background: white;
+    margin-bottom: 24px;
+    border-radius: 2px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    border-top: 4px solid var(--forest);
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header-main {
+    background: var(--forest); color: white;
+    padding: 26px 36px 20px; position: relative; overflow: hidden;
+  }
+  .header-main::before {
+    content: ''; position: absolute; right: -20px; top: -20px;
+    width: 180px; height: 180px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .header-eyebrow {
+    font-size: 10px; font-weight: 300; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--sage); margin-bottom: 5px;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 900; line-height: 1.1;
+    color: white; margin-bottom: 10px;
+  }
+  .header-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .meta-pill {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 3px 12px;
+    font-size: 11px; color: rgba(255,255,255,0.85); font-style: italic;
+  }
+  .header-small {
+    background: var(--forest); color: white; padding: 14px 36px;
+  }
+  .header-small h1 { font-size: 19px; margin-bottom: 0; }
+
+  /* ── PROGRAM BAR ── */
+  .program-bar { background: var(--gold); display: flex; overflow: hidden; }
+  .program-slot {
+    flex: 1; padding: 9px 12px; border-right: 1px solid rgba(255,255,255,0.25);
+    text-align: center;
+  }
+  .program-slot:last-child { border-right: none; }
+  .program-icon { font-size: 14px; display: block; margin-bottom: 1px; }
+  .program-time { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.75); font-weight: 300; }
+  .program-meal { font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 700; color: white; line-height: 1.2; }
+
+  /* ── CONTENT ── */
+  .content-area { padding: 22px 36px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .section { margin-bottom: 18px; }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-weight: 700; color: var(--forest);
+    border-bottom: 2px solid var(--forest);
+    padding-bottom: 4px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  h2 .icon { font-size: 13px; }
+  h3 {
+    font-size: 10.5px; font-weight: 600; color: var(--ember);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 5px; margin-top: 10px;
+  }
+  h3:first-child { margin-top: 0; }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 7px;
+    padding: 2px 0; border-bottom: 1px dotted rgba(0,0,0,0.07);
+    font-size: 12px; line-height: 1.4;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checkbox {
+    width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px;
+    border: 1.5px solid var(--moss); border-radius: 2px;
+    cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  }
+  .checkbox.checked { background: var(--moss); border-color: var(--moss); }
+  .checkbox.checked::after {
+    content: '✓'; display: block; font-size: 9px; color: white;
+    text-align: center; line-height: 11px; font-weight: bold;
+  }
+  .checklist li.checked-item { opacity: 0.45; text-decoration: line-through; text-decoration-color: var(--muted); }
+  .note {
+    font-style: italic; font-size: 10.5px; color: var(--muted);
+    margin-top: 5px; padding-left: 6px; border-left: 2px solid var(--sage);
+  }
+  .bold { font-weight: 600; }
+
+  /* ── INFO BOX ── */
+  .info-box { background: var(--forest); color: white; padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; }
+  .info-box-title { font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--sage); }
+  .info-row { display: flex; gap: 6px; font-size: 11px; margin-bottom: 3px; color: rgba(255,255,255,0.85); }
+  .info-label { font-weight: 600; min-width: 90px; color: rgba(255,255,255,0.55); flex-shrink: 0; }
+
+  /* ── KIDS CARDS ── */
+  .kids-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .kid-card { border: 1.5px solid var(--warm); border-radius: 4px; overflow: hidden; }
+  .kid-card-header { background: var(--moss); color: white; padding: 7px 12px; }
+  .kid-card-header.small { background: var(--ember); }
+  .kid-label { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; }
+  .kid-sublabel { font-size: 10px; opacity: 0.8; font-style: italic; }
+  .kid-card-body { padding: 8px 12px; background: white; }
+  .kid-card-body .checklist li { font-size: 11px; }
+
+  /* ── DISH BLOCKS ── */
+  .dish-block {
+    background: var(--cream); border-left: 3px solid var(--gold);
+    padding: 10px 14px; border-radius: 0 4px 4px 0; margin-bottom: 12px;
+  }
+  .dish-title { font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; color: var(--forest); margin-bottom: 2px; }
+  .dish-when { font-size: 10px; color: var(--muted); font-style: italic; margin-bottom: 8px; }
+  .dish-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .dish-label { font-size: 10px; font-weight: 600; color: var(--ember); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+
+  /* ── PAGE LABEL ── */
+  .page-label {
+    font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); text-align: right; padding: 5px 36px; background: var(--warm);
+  }
+
+  hr { border: none; border-top: 1px solid var(--warm); margin: 14px 0; }
+
+  /* ── BUTTONS ── */
+  .reset-btn {
+    display: inline-block; padding: 7px 22px; background: transparent; color: var(--muted);
+    border: 1px solid var(--warm); border-radius: 4px;
+    font-family: 'Source Serif 4', serif; font-size: 12px;
+    cursor: pointer; letter-spacing: 0.5px;
+  }
+  .reset-btn:hover { border-color: var(--ember); color: var(--ember); }
+  .action-bar {
+    display: flex; gap: 10px; justify-content: flex-end;
+    padding: 10px 20px; background: var(--cream);
+    border-bottom: 1px solid var(--warm);
+  }
+
+  /* ══════════════════════════════════
+     EINKAUFSLISTE
+  ══════════════════════════════════ */
+  .shop-name-bar {
+    background: var(--warm); padding: 14px 28px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .shop-name-bar label { font-size: 12px; font-weight: 600; color: var(--forest); }
+  .shop-name-input {
+    font-family: 'Source Serif 4', serif; font-size: 13px;
+    border: 1.5px solid var(--sage); border-radius: 4px;
+    padding: 5px 12px; background: white; color: var(--ink); width: 200px;
+  }
+  .shop-name-input:focus { outline: none; border-color: var(--forest); }
+  .shop-hint { font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* Summary */
+  .shop-summary {
+    background: white; border-radius: 4px; margin-bottom: 20px;
+    border: 1.5px solid var(--warm); overflow: hidden;
+  }
+  .shop-summary-header {
+    background: var(--forest); color: white; padding: 8px 16px;
+    font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700;
+  }
+  .shop-summary-body { padding: 12px 16px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .summary-person {
+    background: var(--cream); border: 1.5px solid var(--warm);
+    border-radius: 4px; padding: 8px 12px; min-width: 160px; flex: 1;
+  }
+  .summary-person-name {
+    font-family: 'Playfair Display', serif; font-size: 12px; font-weight: 700;
+    color: var(--forest); margin-bottom: 5px;
+    border-bottom: 1px solid var(--warm); padding-bottom: 4px;
+  }
+  .summary-person-items { font-size: 11px; color: var(--ink); line-height: 1.7; }
+  .summary-person-items span { display: block; }
+  .summary-person-items .done-item { text-decoration: line-through; opacity: 0.45; }
+  .summary-empty { font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* Category blocks */
+  .shop-cat { margin-bottom: 20px; }
+  .shop-cat-title {
+    font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700;
+    color: white; background: var(--moss);
+    padding: 6px 14px; border-radius: 4px 4px 0 0; margin-bottom: 0;
+  }
+  .shop-cat-body { background: white; border: 1.5px solid var(--warm); border-top: none; border-radius: 0 0 4px 4px; padding: 4px 0; }
+
+  /* Shop item row */
+  .shop-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 5px 14px; border-bottom: 1px dotted rgba(0,0,0,0.06);
+    transition: background 0.1s;
+  }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-item:hover { background: var(--cream); }
+  .shop-item.done { opacity: 0.4; }
+  .shop-item.done .shop-item-name { text-decoration: line-through; }
+  .shop-item-name { flex: 1; font-size: 12px; line-height: 1.4; }
+  .shop-item-menge { font-size: 10.5px; color: var(--muted); font-style: italic; white-space: nowrap; }
+  .shop-who {
+    font-family: 'Source Serif 4', serif; font-size: 11px;
+    border: 1px solid var(--warm); border-radius: 3px;
+    padding: 3px 8px; background: white; color: var(--ink); width: 130px;
+  }
+  .shop-who:focus { border-color: var(--sage); outline: none; }
+  .shop-who.assigned { border-color: var(--moss); background: #f0f7ee; font-weight: 600; color: var(--forest); }
+  .shop-done-cb { width: 14px; height: 14px; accent-color: var(--moss); cursor: pointer; flex-shrink: 0; }
+
+  @media (max-width: 600px) {
+    .shop-item { flex-wrap: wrap; }
+    .shop-who { width: 100%; }
+    .kids-grid, .grid-2, .dish-cols { grid-template-columns: 1fr; }
+    .program-bar { flex-wrap: wrap; }
+    .tab-btn { padding: 8px 10px; font-size: 11.5px; }
+  }
+
+  @media print {
+    .tab-nav, .action-bar { display: none !important; }
+    body { background: white; font-size: 10.5px; }
+    .tab-content { display: block !important; padding: 0; max-width: none; }
+    .page { margin: 0; page-break-after: always; box-shadow: none; border-top: 3px solid var(--forest); }
+    .page:last-child { page-break-after: avoid; }
+    h1 { font-size: 20px !important; }
+    h2 { font-size: 13px !important; }
+    .content-area { padding: 14px 22px !important; }
+    .shop-summary, .shop-name-bar, .shop-hint { display: none; }
+    .shop-who { border: none; background: transparent; font-size: 10px; }
+    .shop-item.done { opacity: 1; }
+    .shop-item.done .shop-item-name { text-decoration: none; }
+  }
+</style>
 </head>
 <body>
-  <div class="hero">
-    <div class="emoji">&#9978;</div>
-    <h1>Zelten im Jura</h1>
-    <p class="subtitle">Natur. Stille. Abenteuer.</p>
-    <div class="divider"></div>
-    <p>Planung und Infos für unvergessliche Zeltabenteuer im Schweizer Jura.</p>
+
+<!-- TAB NAVIGATION -->
+<nav class="tab-nav no-print">
+  <button class="tab-btn active" onclick="showTab('info')">📋 Info</button>
+  <button class="tab-btn" onclick="showTab('kinder')">🎒 Kinder</button>
+  <button class="tab-btn" onclick="showTab('ausruestung')">⛺ Ausrüstung</button>
+  <button class="tab-btn" onclick="showTab('essen')">🍳 Essensplan</button>
+  <button class="tab-btn" onclick="showTab('einkauf')">🛒 Einkaufsliste</button>
+</nav>
+
+<div class="action-bar no-print">
+  <button class="reset-btn" onclick="resetChecks()">↺ Häkchen zurücksetzen</button>
+  <button class="reset-btn" onclick="window.print()" style="border-color:var(--forest);color:var(--forest);">🖨️ Drucken</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 1: INFO
+══════════════════════════════════════ -->
+<div id="tab-info" class="tab-content active">
+  <div class="page">
+    <div class="header-main">
+      <div class="header-eyebrow">Väter &amp; Kinder Camping</div>
+      <h1>Vatercamp<br>Bout-du-Pont</h1>
+      <div class="header-meta">
+        <span class="meta-pill">📅 Samstag – Sonntag</span>
+        <span class="meta-pill">📍 Soubey, Vallée du Doubs</span>
+        <span class="meta-pill">👨‍👧 6 Väter · 9 Kinder</span>
+      </div>
+    </div>
+    <div class="program-bar">
+      <div class="program-slot">
+        <span class="program-icon">🚗</span>
+        <div class="program-time">Sa. Mittag</div>
+        <div class="program-meal">Sandwich individuell</div>
+      </div>
+      <div class="program-slot">
+        <span class="program-icon">🍿</span>
+        <div class="program-time">Sa. Nachmittag</div>
+        <div class="program-meal">Popcorn + Snacks über Feuer</div>
+      </div>
+      <div class="program-slot">
+        <span class="program-icon">🍚</span>
+        <div class="program-time">Sa. Abend</div>
+        <div class="program-meal">Risotto Milanese + Würste</div>
+      </div>
+      <div class="program-slot">
+        <span class="program-icon">🍳</span>
+        <div class="program-time">So. Frühstück</div>
+        <div class="program-meal">Shakshuka + Fladenbrot</div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="info-box">
+        <div class="info-box-title">📍 Bout-du-Pont, Soubey</div>
+        <div class="info-row"><span class="info-label">Adresse</span> Bout-du-Pont 19, 2887 Soubey</div>
+        <div class="info-row"><span class="info-label">Telefon</span> +41 79 728 02 23</div>
+      </div>
+      <div class="section">
+        <h2><span class="icon">📅</span> Tagesablauf</h2>
+        <h3>Samstag</h3>
+        <ul class="checklist" style="list-style:none;">
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Mittags</span> Anreise, Zelt aufstellen, Sandwiches</li>
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Nachmittag</span> Freies Spiel, Popcorn &amp; Snacks am Feuer</li>
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Abends</span> Risotto Milanese + Würste vom Grillspies</li>
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Nacht</span> Lagerfeuer, Schlafen</li>
+        </ul>
+        <h3>Sonntag</h3>
+        <ul class="checklist" style="list-style:none;">
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Frühstück</span> Shakshuka + Fladenbrot</li>
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Vormittag</span> Freizeit, Abbau</li>
+          <li style="border:none;padding:3px 0;"><span style="font-size:11px;color:var(--muted);min-width:70px;display:inline-block;">Mittags</span> Abreise</li>
+        </ul>
+      </div>
+    </div>
+    <div class="page-label">Vatercamp Bout-du-Pont 2026</div>
   </div>
-  <footer>coming soon</footer>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 2: KINDER PACKLISTE
+══════════════════════════════════════ -->
+<div id="tab-kinder" class="tab-content">
+  <div class="page">
+    <div class="header-small">
+      <div class="header-eyebrow">Packliste</div>
+      <h1>🎒 Kinder</h1>
+    </div>
+    <div class="content-area">
+      <div class="kids-grid">
+        <div class="kid-card">
+          <div class="kid-card-header">
+            <div class="kid-label">Schulkinder</div>
+          </div>
+          <div class="kid-card-body">
+            <ul class="checklist" data-group="kinder-schule">
+              <li><span class="checkbox"></span>Schlafsack</li>
+              <li><span class="checkbox"></span>Isomatte</li>
+              <li><span class="checkbox"></span>Pyjama</li>
+              <li><span class="checkbox"></span>Badehose</li>
+              <li><span class="checkbox"></span>Badetuch</li>
+              <li><span class="checkbox"></span>Sonnenhut</li>
+              <li><span class="checkbox"></span>Extra T-Shirt</li>
+              <li><span class="checkbox"></span>Pulli / Fleece</li>
+              <li><span class="checkbox"></span>Regenjacke</li>
+              <li><span class="checkbox"></span>Wechsel Unterwäsche + Socken</li>
+              <li><span class="checkbox"></span>Taschenlampe</li>
+              <li><span class="checkbox"></span>Wasserflasche</li>
+              <li><span class="checkbox"></span>Zahnbürste</li>
+              <li><span class="checkbox"></span>Zahnpasta</li>
+              <li><span class="checkbox"></span>FlipFlops</li>
+            </ul>
+          </div>
+        </div>
+        <div class="kid-card">
+          <div class="kid-card-header small">
+            <div class="kid-label">Kleinkind</div>
+            <div class="kid-sublabel">Elternteil packt</div>
+          </div>
+          <div class="kid-card-body">
+            <ul class="checklist" data-group="kinder-klein">
+              <li><span class="checkbox"></span>Windeln für 1,5 Tage</li>
+              <li><span class="checkbox"></span>Feuchttücher</li>
+              <li><span class="checkbox"></span>Schlafsack</li>
+              <li><span class="checkbox"></span>Isomatte</li>
+              <li><span class="checkbox"></span>Sonnenhut</li>
+              <li><span class="checkbox"></span>2× Wechselkleidung</li>
+              <li><span class="checkbox"></span>Warme Jacke + Mütze</li>
+              <li><span class="checkbox"></span>Badehose / Schwimmwindel</li>
+              <li><span class="checkbox"></span>Gummistiefel</li>
+              <li><span class="checkbox"></span>FlipFlops</li>
+              <li><span class="checkbox"></span>Kuscheltier</li>
+              <li><span class="checkbox"></span>Teller + Tiefe Schüssel</li>
+              <li><span class="checkbox"></span>Trinkbecher</li>
+              <li><span class="checkbox"></span>Besteck / Lätzchen</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--cream);border-left:3px solid var(--moss);padding:8px 12px;margin-top:12px;border-radius:0 4px 4px 0;">
+        <p style="font-size:11px;color:var(--ink);">
+          <strong>Teller &amp; Besteck:</strong> Jedes Kind braucht einen <strong>flachen Teller</strong>, eine <strong>tiefe Schüssel</strong> (für Risotto) sowie <strong>Becher und Besteck</strong>. Bitte von zuhause mitbringen.
+        </p>
+      </div>
+    </div>
+    <div class="page-label">Vatercamp Bout-du-Pont 2026</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 3: AUSRÜSTUNG
+══════════════════════════════════════ -->
+<div id="tab-ausruestung" class="tab-content">
+  <div class="page">
+    <div class="header-small">
+      <div class="header-eyebrow">Ausrüstung</div>
+      <h1>Papa persönlich · Material · Apotheke</h1>
+    </div>
+    <div class="content-area">
+      <div class="grid-2">
+        <div>
+          <div class="section">
+            <h2><span class="icon">🎒</span> Papa – persönlich</h2>
+            <ul class="checklist" data-group="papa">
+              <li><span class="checkbox"></span>Schlafsack</li>
+              <li><span class="checkbox"></span>Isomatte</li>
+              <li><span class="checkbox"></span>Stirnlampe</li>
+              <li><span class="checkbox"></span>Handtuch</li>
+              <li><span class="checkbox"></span>Seife / Shampoo</li>
+              <li><span class="checkbox"></span>Zahnbürste + Zahnpasta</li>
+              <li><span class="checkbox"></span>Regenjacke</li>
+              <li><span class="checkbox"></span>Badehose</li>
+              <li><span class="checkbox"></span>FlipFlops</li>
+              <li><span class="checkbox"></span>Wechselkleidung</li>
+              <li><span class="checkbox"></span>Teller</li>
+              <li><span class="checkbox"></span>Tiefe Schüssel / Schälchen (Risotto)</li>
+              <li><span class="checkbox"></span>Trinkflasche</li>
+              <li><span class="checkbox"></span>Besteck</li>
+            </ul>
+          </div>
+          <div class="section">
+            <h2><span class="icon">⛺</span> Zelt &amp; Lager</h2>
+            <ul class="checklist" data-group="zelt">
+              <li><span class="checkbox"></span>Grosses Familienzelt</li>
+              <li><span class="checkbox"></span>Zeltstangen + Heringe prüfen!</li>
+              <li><span class="checkbox"></span>Grosse Taschenlampe</li>
+              <li><span class="checkbox"></span>Regenblache</li>
+            </ul>
+          </div>
+          <div class="section">
+            <h2><span class="icon">🔥</span> Feuer &amp; Grill</h2>
+            <ul class="checklist" data-group="feuer">
+              <li><span class="checkbox"></span>Holz</li>
+              <li><span class="checkbox"></span>Grillrost</li>
+              <li><span class="checkbox"></span>Grillzange</li>
+            </ul>
+          </div>
+          <div class="section">
+            <h2><span class="icon">🍳</span> Kochen</h2>
+            <ul class="checklist" data-group="kochen">
+              <li><span class="checkbox"></span>Dutch Oven + Deckel + Greifer</li>
+              <li><span class="checkbox"></span>Feuerfeste Handschuhe</li>
+              <li><span class="checkbox"></span>Schneidebrett + Messer</li>
+              <li><span class="checkbox"></span>Kochlöffel / Pfannenwender</li>
+              <li><span class="checkbox"></span>Haushaltspapier</li>
+              <li><span class="checkbox"></span>Müllsäcke</li>
+              <li><span class="checkbox"></span>Kaffee</li>
+            </ul>
+          </div>
+          <div class="section">
+            <h2><span class="icon">🎲</span> Diverses &amp; Freizeit</h2>
+            <ul class="checklist" data-group="diverses">
+              <li><span class="checkbox"></span>Sonnencreme (für alle)</li>
+              <li><span class="checkbox"></span>Powerbank</li>
+              <li><span class="checkbox"></span>Fussball</li>
+              <li><span class="checkbox"></span>Badminton</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="section">
+            <h2><span class="icon">💊</span> Reiseapotheke</h2>
+            <h3>Medikamente</h3>
+            <ul class="checklist" data-group="apo-med">
+              <li><span class="checkbox"></span>Algifor-Sirup</li>
+              <li><span class="checkbox"></span>Irfen</li>
+              <li><span class="checkbox"></span>Zyrtec Tabletten</li>
+              <li><span class="checkbox"></span>Cetallerg Tropfen</li>
+            </ul>
+            <h3>Wunden &amp; Haut</h3>
+            <ul class="checklist" data-group="apo-wunden">
+              <li><span class="checkbox"></span>Pflaster-Sortiment (Kinder)</li>
+              <li><span class="checkbox"></span>Desinfektionsspray</li>
+              <li><span class="checkbox"></span>Bepanthen</li>
+            </ul>
+            <h3>Zecken &amp; Insekten</h3>
+            <ul class="checklist" data-group="apo-zecken">
+              <li><span class="checkbox"></span>Pinzette</li>
+              <li><span class="checkbox"></span>Insektenschutzmittel</li>
+              <li><span class="checkbox"></span>Insektenstich-Wärmestift (AAA-Batterien)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-label">Vatercamp Bout-du-Pont 2026</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4: ESSENSPLAN
+══════════════════════════════════════ -->
+<div id="tab-essen" class="tab-content">
+  <div class="page">
+    <div class="header-small">
+      <div class="header-eyebrow">Verpflegung</div>
+      <h1>Essensplan – Zutaten &amp; Material</h1>
+    </div>
+    <div class="content-area">
+      <div class="grid-2">
+        <div>
+          <div class="dish-block">
+            <div class="dish-title">🧺 Mittagessen Samstag</div>
+            <div class="dish-when">Sa. Mittag · zum Mitnehmen</div>
+            <div class="dish-label">Zutaten</div>
+            <ul class="checklist" data-group="essen-mittag">
+              <li><span class="checkbox"></span>Brot / Krustenkranz</li>
+              <li><span class="checkbox"></span>Salami</li>
+              <li><span class="checkbox"></span>Lyoner</li>
+              <li><span class="checkbox"></span>Gurken – 2 Stk.</li>
+              <li><span class="checkbox"></span>Karotten – 1 kg</li>
+            </ul>
+          </div>
+          <div class="dish-block">
+            <div class="dish-title">🥕 Nachmittags-Snacks</div>
+            <div class="dish-when">Sa. Nachmittag · zum Knabbern</div>
+            <div class="dish-label">Zutaten</div>
+            <ul class="checklist" data-group="essen-snacks">
+              <li><span class="checkbox"></span>Wassermelone – 1 grosse</li>
+              <li><span class="checkbox"></span>Früchte (Äpfel, Pfirsiche)</li>
+              <li><span class="checkbox"></span>Guetzli</li>
+            </ul>
+          </div>
+          <div class="dish-block">
+            <div class="dish-title">🍿 Popcorn</div>
+            <div class="dish-when">Sa. Nachmittag · ~15 Personen</div>
+            <div class="dish-cols">
+              <div>
+                <div class="dish-label">Zutaten</div>
+                <ul class="checklist" data-group="essen-popcorn">
+                  <li><span class="checkbox"></span>Popcornmais – 400 g</li>
+                  <li><span class="checkbox"></span>Sonnenblumenöl</li>
+                  <li><span class="checkbox"></span>Salz</li>
+                </ul>
+              </div>
+              <div>
+                <div class="dish-label">Material</div>
+                <ul class="checklist">
+                  <li><span class="checkbox"></span>Dutch Oven + Deckel</li>
+                  <li><span class="checkbox"></span>Feuerfeste Handschuhe</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="dish-block">
+            <div class="dish-title">🍚 Risotto Milanese</div>
+            <div class="dish-when">Sa. Abend · ~15 Personen</div>
+            <div class="dish-cols">
+              <div>
+                <div class="dish-label">Zutaten</div>
+                <ul class="checklist" data-group="essen-risotto">
+                  <li><span class="checkbox"></span>Risottoreis (Arborio) – 1,2 kg</li>
+                  <li><span class="checkbox"></span>Safran – 3 Briefchen</li>
+                  <li><span class="checkbox"></span>Zwiebeln – 4 grosse</li>
+                  <li><span class="checkbox"></span>Knoblauch – 2 Zehen</li>
+                  <li><span class="checkbox"></span>Butter – 150 g</li>
+                  <li><span class="checkbox"></span>Parmesan gerieben – 200 g</li>
+                  <li><span class="checkbox"></span>Brühwürfel – 5 Stk.</li>
+                  <li><span class="checkbox"></span>Weisswein – 2 dl</li>
+                  <li><span class="checkbox"></span>Salz, Pfeffer</li>
+                </ul>
+              </div>
+              <div>
+                <div class="dish-label">Material</div>
+                <ul class="checklist">
+                  <li><span class="checkbox"></span>Dutch Oven + Deckel</li>
+                  <li><span class="checkbox"></span>Schöpfkelle</li>
+                  <li><span class="checkbox"></span>Kochlöffel</li>
+                  <li><span class="checkbox"></span>Feuerfeste Handschuhe</li>
+                  <li><span class="checkbox"></span>Schneidebrett + Messer</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="dish-block">
+            <div class="dish-title">🌭 Würste vom Feuer</div>
+            <div class="dish-when">Sa. Abend · Kinder am Grillspiess</div>
+            <div class="dish-cols">
+              <div>
+                <div class="dish-label">Zutaten</div>
+                <ul class="checklist" data-group="essen-wuerste">
+                  <li><span class="checkbox"></span>Würste</li>
+                  <li><span class="checkbox"></span>Ketchup, Senf</li>
+                </ul>
+              </div>
+              <div>
+                <div class="dish-label">Material</div>
+                <ul class="checklist">
+                  <li><span class="checkbox"></span>Grillrost</li>
+                  <li><span class="checkbox"></span>Grillzange</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="dish-block">
+            <div class="dish-title">🍳 Shakshuka</div>
+            <div class="dish-when">So. Frühstück · ~15 Personen · Paella-Station</div>
+            <div class="dish-cols">
+              <div>
+                <div class="dish-label">Zutaten</div>
+                <ul class="checklist" data-group="essen-shakshuka">
+                  <li><span class="checkbox"></span>Eier – 12 Stk.</li>
+                  <li><span class="checkbox"></span>Geh. Tomaten – 4 Dosen à 400 g</li>
+                  <li><span class="checkbox"></span>Zwiebeln – 2 grosse</li>
+                  <li><span class="checkbox"></span>Knoblauch – 2 Zehen</li>
+                  <li><span class="checkbox"></span>Rote Peperoni – 3 Stk.</li>
+                  <li><span class="checkbox"></span>Sonnenblumenöl</li>
+                  <li><span class="checkbox"></span>Kreuzkümmel</li>
+                  <li><span class="checkbox"></span>Paprikapulver geräuchert</li>
+                  <li><span class="checkbox"></span>Chiliflocken</li>
+                  <li><span class="checkbox"></span>Salz, Pfeffer</li>
+                </ul>
+              </div>
+              <div>
+                <div class="dish-label">Material</div>
+                <ul class="checklist">
+                  <li><span class="checkbox"></span><span class="bold">Paella-Pfanne</span></li>
+                  <li><span class="checkbox"></span>Paella-Station (Gestell)</li>
+                  <li><span class="checkbox"></span>Kohle-Pad</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="dish-block">
+            <div class="dish-title">🫓 Fladenbrot</div>
+            <div class="dish-when">So. Frühstück · Beilage Shakshuka</div>
+            <div class="dish-label">Zutaten</div>
+            <ul class="checklist" data-group="essen-fladenbrot">
+              <li><span class="checkbox"></span>Fladenbrote (fertig kaufen empfohlen)</li>
+              <li><span class="checkbox"></span>Mehl – 1 kg (für selbst gemachte)</li>
+            </ul>
+            <p class="note" style="margin-top:6px;">Oder selbst machen: Mehl 400 g, Wasser, Olivenöl, Salz – in der Pfanne</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-label">Vatercamp Bout-du-Pont 2026</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 5: EINKAUFSLISTE
+══════════════════════════════════════ -->
+<div id="tab-einkauf" class="tab-content">
+  <div class="page">
+    <div class="header-small">
+      <div class="header-eyebrow">Koordination</div>
+      <h1>🛒 Einkaufsliste</h1>
+    </div>
+
+    <div class="shop-name-bar">
+      <label for="myName">Mein Name:</label>
+      <input type="text" id="myName" class="shop-name-input" placeholder="z.B. Matthias" oninput="saveMyName()">
+      <span class="shop-hint">Namen eingeben → dann Artikel zuweisen · Änderungen werden lokal gespeichert</span>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ZUSAMMENFASSUNG -->
+      <div class="shop-summary">
+        <div class="shop-summary-header">👥 Übersicht – Wer kauft was</div>
+        <div class="shop-summary-body" id="summaryBody">
+          <span class="summary-empty">Noch keine Zuweisung. Klicke auf «Ich kaufe das» oder trage Namen in die Felder ein.</span>
+        </div>
+      </div>
+
+      <!-- ITEMS BY CATEGORY -->
+      <div id="shopList"></div>
+
+    </div>
+    <div class="page-label">Vatercamp Bout-du-Pont 2026</div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════
+const SHOP_ITEMS = [
+  { id: 's01', cat: '🧺 Mittagessen Samstag',     item: 'Brot / Krustenkranz' },
+  { id: 's02', cat: '🧺 Mittagessen Samstag',     item: 'Salami' },
+  { id: 's03', cat: '🧺 Mittagessen Samstag',     item: 'Lyoner' },
+  { id: 's04', cat: '🧺 Mittagessen Samstag',     item: 'Gurken – 2 Stk.' },
+  { id: 's05', cat: '🧺 Mittagessen Samstag',     item: 'Karotten – 1 kg' },
+
+  { id: 's06', cat: '🥕 Nachmittags-Snacks',      item: 'Wassermelone – 1 grosse' },
+  { id: 's07', cat: '🥕 Nachmittags-Snacks',      item: 'Früchte (Äpfel, Pfirsiche)' },
+  { id: 's08', cat: '🥕 Nachmittags-Snacks',      item: 'Guetzli' },
+
+  { id: 's09', cat: '🍿 Popcorn',                  item: 'Popcornmais – 400 g' },
+  { id: 's10', cat: '🍿 Popcorn',                  item: 'Sonnenblumenöl' },
+
+  { id: 's11', cat: '🍚 Risotto Milanese',         item: 'Risottoreis (Arborio) – 1,2 kg' },
+  { id: 's12', cat: '🍚 Risotto Milanese',         item: 'Safran – 3 Briefchen' },
+  { id: 's13', cat: '🍚 Risotto Milanese',         item: 'Zwiebeln – 4 grosse' },
+  { id: 's14', cat: '🍚 Risotto Milanese',         item: 'Knoblauch – 2 Zehen' },
+  { id: 's15', cat: '🍚 Risotto Milanese',         item: 'Butter – 150 g' },
+  { id: 's16', cat: '🍚 Risotto Milanese',         item: 'Parmesan gerieben – 200 g' },
+  { id: 's17', cat: '🍚 Risotto Milanese',         item: 'Brühwürfel – 5 Stk.' },
+  { id: 's18', cat: '🍚 Risotto Milanese',         item: 'Weisswein – 2 dl' },
+
+  { id: 's19', cat: '🌭 Würste vom Feuer',         item: 'Würste (genug für alle)' },
+  { id: 's20', cat: '🌭 Würste vom Feuer',         item: 'Ketchup, Senf' },
+
+  { id: 's21', cat: '🍳 Shakshuka',               item: 'Eier – 12 Stk.' },
+  { id: 's22', cat: '🍳 Shakshuka',               item: 'Gehackte Tomaten – 4 Dosen à 400 g' },
+  { id: 's23', cat: '🍳 Shakshuka',               item: 'Zwiebeln – 2 grosse' },
+  { id: 's24', cat: '🍳 Shakshuka',               item: 'Knoblauch – 2 Zehen' },
+  { id: 's25', cat: '🍳 Shakshuka',               item: 'Rote Peperoni – 3 Stk.' },
+  { id: 's26', cat: '🍳 Shakshuka',               item: 'Kreuzkümmel' },
+  { id: 's27', cat: '🍳 Shakshuka',               item: 'Paprikapulver geräuchert' },
+  { id: 's28', cat: '🍳 Shakshuka',               item: 'Chiliflocken' },
+
+  { id: 's29', cat: '🫓 Fladenbrot',              item: 'Fladenbrote (fertig)' },
+  { id: 's30', cat: '🫓 Fladenbrot',              item: 'Mehl – 1 kg' },
+
+  { id: 's31', cat: '🧂 Basis / Haushalt',        item: 'Salz, Pfeffer' },
+  { id: 's32', cat: '🧂 Basis / Haushalt',        item: 'Sonnenblumenöl (gross)' },
+  { id: 's33', cat: '🧂 Basis / Haushalt',        item: 'Olivenöl' },
+];
+
+// ══════════════════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════════════════
+const CHECKS_KEY  = 'vatercamp-checks-v2';
+const SHOP_KEY    = 'vatercamp-shop';
+const NAME_KEY    = 'vatercamp-myname';
+
+function getChecks() { try { return JSON.parse(localStorage.getItem(CHECKS_KEY)) || {}; } catch { return {}; } }
+function saveChecks(s) { localStorage.setItem(CHECKS_KEY, JSON.stringify(s)); }
+function getShop()   { try { return JSON.parse(localStorage.getItem(SHOP_KEY))   || {}; } catch { return {}; } }
+function saveShop(s) { localStorage.setItem(SHOP_KEY, JSON.stringify(s)); }
+function getMyName() { return localStorage.getItem(NAME_KEY) || ''; }
+function saveMyName() {
+  localStorage.setItem(NAME_KEY, document.getElementById('myName').value.trim());
+}
+
+// ══════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ══════════════════════════════════════════════════════════
+// CHECKBOXES (packliste / ausrüstung / essen)
+// ══════════════════════════════════════════════════════════
+function initChecks() {
+  const state = getChecks();
+  document.querySelectorAll('.checkbox').forEach((cb, i) => {
+    if (state['cb_' + i]) applyCheck(cb, true);
+    cb.addEventListener('click', function() {
+      const checked = !cb.classList.contains('checked');
+      applyCheck(cb, checked);
+      const s = getChecks();
+      if (checked) s['cb_' + i] = true; else delete s['cb_' + i];
+      saveChecks(s);
+    });
+  });
+}
+function applyCheck(cb, checked) {
+  cb.classList.toggle('checked', checked);
+  cb.closest('li').classList.toggle('checked-item', checked);
+}
+function resetChecks() {
+  if (!confirm('Alle Häkchen zurücksetzen?')) return;
+  localStorage.removeItem(CHECKS_KEY);
+  document.querySelectorAll('.checkbox').forEach(cb => applyCheck(cb, false));
+}
+
+// ══════════════════════════════════════════════════════════
+// SHOPPING LIST
+// ══════════════════════════════════════════════════════════
+function buildShopList() {
+  const shopState = getShop();
+  const cats = [...new Set(SHOP_ITEMS.map(i => i.cat))];
+  const container = document.getElementById('shopList');
+  container.innerHTML = '';
+
+  cats.forEach(cat => {
+    const items = SHOP_ITEMS.filter(i => i.cat === cat);
+    const block = document.createElement('div');
+    block.className = 'shop-cat';
+
+    const title = document.createElement('div');
+    title.className = 'shop-cat-title';
+    title.textContent = cat;
+    block.appendChild(title);
+
+    const body = document.createElement('div');
+    body.className = 'shop-cat-body';
+
+    items.forEach(item => {
+      const st = shopState[item.id] || {};
+      const row = document.createElement('div');
+      row.className = 'shop-item' + (st.done ? ' done' : '');
+      row.dataset.id = item.id;
+
+      // Done checkbox
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'shop-done-cb';
+      cb.checked = !!st.done;
+      cb.title = 'Erledigt';
+      cb.addEventListener('change', () => {
+        const s = getShop();
+        s[item.id] = s[item.id] || {};
+        s[item.id].done = cb.checked;
+        saveShop(s);
+        row.classList.toggle('done', cb.checked);
+        updateSummary();
+      });
+
+      // Name
+      const name = document.createElement('span');
+      name.className = 'shop-item-name';
+      name.textContent = item.item;
+
+      // Who input
+      const who = document.createElement('input');
+      who.type = 'text';
+      who.className = 'shop-who' + (st.wer ? ' assigned' : '');
+      who.placeholder = 'Wer kauft?';
+      who.value = st.wer || '';
+      who.addEventListener('focus', () => {
+        if (!who.value && getMyName()) {
+          who.value = getMyName();
+          who.dispatchEvent(new Event('input'));
+        }
+      });
+      who.addEventListener('input', () => {
+        const s = getShop();
+        s[item.id] = s[item.id] || {};
+        s[item.id].wer = who.value.trim();
+        saveShop(s);
+        who.classList.toggle('assigned', !!who.value.trim());
+        updateSummary();
+      });
+
+      row.appendChild(cb);
+      row.appendChild(name);
+      row.appendChild(who);
+      body.appendChild(row);
+    });
+
+    block.appendChild(body);
+    container.appendChild(block);
+  });
+
+  updateSummary();
+}
+
+function updateSummary() {
+  const shopState = getShop();
+  const byPerson = {};
+
+  SHOP_ITEMS.forEach(item => {
+    const st = shopState[item.id] || {};
+    const wer = (st.wer || '').trim();
+    if (!wer) return;
+    if (!byPerson[wer]) byPerson[wer] = [];
+    byPerson[wer].push({ item: item.item, done: !!st.done });
+  });
+
+  const body = document.getElementById('summaryBody');
+  if (Object.keys(byPerson).length === 0) {
+    body.innerHTML = '<span class="summary-empty">Noch keine Zuweisung. Namen in die Felder eingeben.</span>';
+    return;
+  }
+
+  body.innerHTML = '';
+  Object.entries(byPerson).sort((a,b) => a[0].localeCompare(b[0])).forEach(([person, items]) => {
+    const card = document.createElement('div');
+    card.className = 'summary-person';
+    const doneCount = items.filter(i => i.done).length;
+    card.innerHTML = `
+      <div class="summary-person-name">${person} <span style="font-size:10px;font-weight:400;color:var(--muted);">(${doneCount}/${items.length} ✓)</span></div>
+      <div class="summary-person-items">${items.map(i =>
+        `<span class="${i.done ? 'done-item' : ''}">${i.done ? '✓ ' : ''}${i.item}</span>`
+      ).join('')}</div>`;
+    body.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  initChecks();
+  buildShopList();
+  const savedName = getMyName();
+  if (savedName) document.getElementById('myName').value = savedName;
+});
+</script>
 </body>
 </html>
